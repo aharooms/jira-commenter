@@ -28,6 +28,14 @@ This action will post a new comment on a Jira ticket, if an comment with the sam
 
 **required**
 
+### `commit-link`
+
+**required**
+
+### `pull-request-link`
+
+**required**
+
 ## Example
 
 ```yml
@@ -36,7 +44,7 @@ jobs:
   runs-on: ...
   steps:
     - name: Jira push comment
-      uses: actions/jira-ticket-comment@v2.0.1
+      uses: actions/jira-ticket-comment@v1.0.1
       with:
         jira-endpoint: get from secrets
         jira-issue-id: ...
@@ -44,4 +52,13 @@ jobs:
         jira-auth-token: ***
         app-name: PMS
         deploy-preview-url: https://preview-example.com
+        commit-link: ...
+        pull-request-link: ...
 ```
+
+## Build
+
+- `npm i`
+- `npm run build`
+- push `dist` directory to github
+- publish as action on marketplace
