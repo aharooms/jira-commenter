@@ -1,0 +1,24 @@
+name: "Jira ticket commenter"
+description: "This actions will post a comment on a Jira ticket"
+
+inputs:
+  jira-endpoint:
+    required: true
+  jira-issue-id:
+    required: true
+  jira-account:
+    required: true
+  jira-auth-token:
+    required: true
+  app-name:
+    required: true
+  deploy-preview-url:
+    required: true
+  commit-link:
+    required: true
+  pull-request-link:
+    required: true
+
+runs:
+  using: "node12"
+  main: "dist/index.js"
