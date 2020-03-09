@@ -1,4 +1,4 @@
-name: "Jira ticket commenter"
+name: "Jira commenter"
 description: "This actions will post a comment on a Jira ticket"
 
 inputs:
