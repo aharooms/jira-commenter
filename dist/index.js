@@ -1666,27 +1666,32 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const jiraEndpoint = Object(core.getInput)("jira-endpoint");
-            const jiraIssueId = Number(Object(core.getInput)("jira-issue-id"));
+            const jiraIssueIdRaw = Object(core.getInput)("jira-issue-id");
             const jiraAccount = Object(core.getInput)("jira-account");
             const jiraAuthToken = Object(core.getInput)("jira-auth-token");
             const appName = Object(core.getInput)("app-name");
             const previewUrl = Object(core.getInput)("deploy-preview-url");
-            const inputParams = {
-                jiraAccount,
-                jiraAuthToken,
-                jiraEndpoint,
-                jiraIssueId
-            };
-            const comments = yield getOptions(getListOfComments)(inputParams);
-            const commentsOfAdmin = getCommentsOfAdmin(comments.comments, jiraAccount, appName);
-            if (commentsOfAdmin.length === 0) {
-                yield getOptions(createNewComment)(Object.assign(Object.assign({}, inputParams), { appName,
-                    previewUrl }));
+            if (!jiraIssueIdRaw || jiraIssueIdRaw === "") {
+                Object(core.warning)("Jira issue id not found, exiting...");
             }
             else {
-                const latestCommentId = commentsOfAdmin.pop().id;
-                yield getOptions(editComment)(Object.assign(Object.assign({}, inputParams), { commentId: latestCommentId, appName,
-                    previewUrl }));
+                const inputParams = {
+                    jiraAccount,
+                    jiraAuthToken,
+                    jiraEndpoint,
+                    jiraIssueId: Number(jiraIssueIdRaw)
+                };
+                const comments = yield getOptions(getListOfComments)(inputParams);
+                const commentsOfAdmin = getCommentsOfAdmin(comments.comments, jiraAccount, appName);
+                if (commentsOfAdmin.length === 0) {
+                    yield getOptions(createNewComment)(Object.assign(Object.assign({}, inputParams), { appName,
+                        previewUrl }));
+                }
+                else {
+                    const latestCommentId = commentsOfAdmin.pop().id;
+                    yield getOptions(editComment)(Object.assign(Object.assign({}, inputParams), { commentId: latestCommentId, appName,
+                        previewUrl }));
+                }
             }
         }
         catch (error) {

@@ -62,41 +62,45 @@ const editComment = async ({
 async function run() {
   try {
     const jiraEndpoint = core.getInput("jira-endpoint");
-    const jiraIssueId = Number(core.getInput("jira-issue-id"));
+    const jiraIssueIdRaw = core.getInput("jira-issue-id");
     const jiraAccount = core.getInput("jira-account");
     const jiraAuthToken = core.getInput("jira-auth-token");
     const appName = core.getInput("app-name");
     const previewUrl = core.getInput("deploy-preview-url");
 
-    const inputParams = {
-      jiraAccount,
-      jiraAuthToken,
-      jiraEndpoint,
-      jiraIssueId
-    };
-
-    const comments = await getOptions(getListOfComments)(inputParams);
-
-    const commentsOfAdmin = getCommentsOfAdmin(
-      comments.comments,
-      jiraAccount,
-      appName
-    );
-
-    if (commentsOfAdmin.length === 0) {
-      await getOptions(createNewComment)({
-        ...inputParams,
-        appName,
-        previewUrl
-      });
+    if (!jiraIssueIdRaw || jiraIssueIdRaw === "") {
+      core.warning("Jira issue id not found, exiting...");
     } else {
-      const latestCommentId = commentsOfAdmin.pop().id;
-      await getOptions(editComment)({
-        ...inputParams,
-        commentId: latestCommentId,
-        appName,
-        previewUrl
-      });
+      const inputParams = {
+        jiraAccount,
+        jiraAuthToken,
+        jiraEndpoint,
+        jiraIssueId: Number(jiraIssueIdRaw)
+      };
+
+      const comments = await getOptions(getListOfComments)(inputParams);
+
+      const commentsOfAdmin = getCommentsOfAdmin(
+        comments.comments,
+        jiraAccount,
+        appName
+      );
+
+      if (commentsOfAdmin.length === 0) {
+        await getOptions(createNewComment)({
+          ...inputParams,
+          appName,
+          previewUrl
+        });
+      } else {
+        const latestCommentId = commentsOfAdmin.pop().id;
+        await getOptions(editComment)({
+          ...inputParams,
+          commentId: latestCommentId,
+          appName,
+          previewUrl
+        });
+      }
     }
   } catch (error) {
     core.setFailed(error.message);
