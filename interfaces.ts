@@ -5,7 +5,7 @@ export interface Input {
   jiraAuthToken: string;
   options?: {
     listeners: {
-      stdout: (data: string) => void;
+      stdout: (data: Buffer) => void;
     };
   };
   appName?: string;
