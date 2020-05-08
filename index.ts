@@ -1,14 +1,14 @@
-import * as core from "@actions/core";
-import * as exec from "@actions/exec";
-import { Input } from "./interfaces";
-import { getCommentString, getCommentsOfAdmin } from "./comment-utils";
-import * as github from "@actions/github";
-import * as Webhooks from "@octokit/webhooks";
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import { Input } from './interfaces';
+import { getCommentString, getCommentsOfAdmin } from './comment-utils';
+import * as github from '@actions/github';
+import * as Webhooks from '@octokit/webhooks';
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 
 const getOptions = (fn: any) => async (args: Input) => {
-  let output = "";
+  let output = '';
   const options = {
     listeners: {
       stdout: (data) => {
@@ -18,9 +18,9 @@ const getOptions = (fn: any) => async (args: Input) => {
   };
   const commentPayload = getCommentString({
     appName: args.appName,
-    commitLink: core.getInput("commit-link"),
+    commitLink: core.getInput('commit-link'),
     previewUrl: args.previewUrl,
-    pullRequestLink: core.getInput("pull-request-link"),
+    pullRequestLink: core.getInput('pull-request-link'),
   });
   await fn({ ...args, commentPayload, options });
 
@@ -65,36 +65,36 @@ const editComment = async ({
 
 async function run() {
   try {
-    const jiraEndpoint = core.getInput("jira-endpoint");
-    const jiraIssueIdRaw = core.getInput("jira-issue-id");
-    const jiraAccount = core.getInput("jira-account");
-    const jiraAuthToken = core.getInput("jira-auth-token");
-    const appName = core.getInput("app-name");
-    const previewUrl = core.getInput("deploy-preview-url");
-    const resolveTicketIdsScript = core.getInput("resolve-ticket-ids-script");
+    const jiraEndpoint = core.getInput('jira-endpoint');
+    const jiraIssueIdRaw = core.getInput('jira-issue-id');
+    const jiraAccount = core.getInput('jira-account');
+    const jiraAuthToken = core.getInput('jira-auth-token');
+    const appName = core.getInput('app-name');
+    const previewUrl = core.getInput('deploy-preview-url');
+    const resolveTicketIdsScript = core.getInput('resolve-ticket-ids-script');
 
     if (
-      (!jiraIssueIdRaw || jiraIssueIdRaw === "") &&
-      resolveTicketIdsScript === ""
+      (!jiraIssueIdRaw || jiraIssueIdRaw === '') &&
+      resolveTicketIdsScript === ''
     ) {
-      core.warning("Jira issue id not found, exiting...");
+      core.warning('Jira issue id not found, exiting...');
     } else {
       const script =
-        resolveTicketIdsScript === ""
+        resolveTicketIdsScript === ''
           ? undefined
-          : new AsyncFunction("branchName", resolveTicketIdsScript);
+          : new AsyncFunction('branchName', resolveTicketIdsScript);
       let jiraIssueId = [Number(jiraIssueIdRaw)];
       if (script) {
         const context = github.context;
         const { eventName, payload } = context;
-        if (eventName === "pull_request") {
+        if (eventName === 'pull_request') {
           const {
             pull_request: {
               head: { ref },
             },
           } = payload as Webhooks.WebhookPayloadPullRequest;
           const result = await script(ref);
-          if (typeof result === "number") {
+          if (typeof result === 'number') {
             jiraIssueId = [result];
           }
           jiraIssueId = result;
@@ -115,7 +115,7 @@ async function run() {
         const commentsOfAdmin = getCommentsOfAdmin(
           comments.comments,
           jiraAccount,
-          appName
+          appName,
         );
 
         if (commentsOfAdmin.length === 0) {

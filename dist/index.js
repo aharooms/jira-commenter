@@ -9750,124 +9750,112 @@ const identifier = (appName) => {
     return `Preview Deploy for ${appName} ready!`;
 };
 const getCommentsOfAdmin = (comments, jiraAccount, appName) => {
-    const commentsOfAdmin = comments.filter(c => { var _a, _b; return ((_b = (_a = c) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.emailAddress) === jiraAccount; });
+    const commentsOfAdmin = comments.filter((c) => { var _a, _b; return ((_b = (_a = c) === null || _a === void 0 ? void 0 : _a.author) === null || _b === void 0 ? void 0 : _b.emailAddress) === jiraAccount; });
     const firstLineOfEveryComments = commentsOfAdmin.reduce((lines, currentComment) => {
         const text = currentComment.body.content[0].content.reduce((acc, cur) => {
             var _a, _b;
-            return (acc += (_b = (_a = cur) === null || _a === void 0 ? void 0 : _a.text, (_b !== null && _b !== void 0 ? _b : "")));
-        }, "");
+            return (acc += (_b = (_a = cur) === null || _a === void 0 ? void 0 : _a.text, (_b !== null && _b !== void 0 ? _b : '')));
+        }, '');
         return lines.concat({ line: text, id: currentComment.id });
     }, []);
-    return firstLineOfEveryComments.filter(l => l.line === identifier(appName));
+    return firstLineOfEveryComments.filter((l) => l.line === identifier(appName));
 };
 const getCommentString = ({ appName, commitLink, previewUrl, pullRequestLink }) => {
     return JSON.stringify(JSON.stringify({
         body: {
-            type: "doc",
+            type: 'doc',
             version: 1,
             content: [
                 {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "text",
-                            text: "Preview Deploy for "
+                            type: 'text',
+                            text: 'Preview Deploy for ',
                         },
                         {
-                            type: "text",
+                            type: 'text',
                             text: appName,
                             marks: [
                                 {
-                                    type: "em"
-                                }
-                            ]
+                                    type: 'em',
+                                },
+                            ],
                         },
                         {
-                            type: "text",
-                            text: " ready!"
+                            type: 'text',
+                            text: ' ready!',
                         },
-                        {
-                            type: "hardBreak"
-                        }
-                    ]
+                    ],
                 },
                 {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "text",
-                            text: "Built with commit "
+                            type: 'text',
+                            text: 'Built with commit ',
                         },
                         {
-                            type: "text",
-                            text: commitLink
-                                .split("/")
-                                .pop()
-                                .slice(0, 8),
+                            type: 'text',
+                            text: commitLink.split('/').pop().slice(0, 8),
                             marks: [
                                 {
-                                    type: "link",
+                                    type: 'link',
                                     attrs: {
                                         href: commitLink,
-                                        title: "Commit link"
-                                    }
-                                }
-                            ]
+                                        title: 'Commit link',
+                                    },
+                                },
+                            ],
                         },
-                        {
-                            type: "hardBreak"
-                        }
-                    ]
+                    ],
                 },
-                ...(pullRequestLink !== ""
+                ...(pullRequestLink !== ''
                     ? [
                         {
-                            type: "paragraph",
+                            type: 'paragraph',
                             content: [
                                 {
-                                    type: "text",
-                                    text: "Pull Request link "
+                                    type: 'text',
+                                    text: 'Pull Request link ',
                                 },
                                 {
-                                    type: "text",
+                                    type: 'text',
                                     text: pullRequestLink,
                                     marks: [
                                         {
-                                            type: "link",
+                                            type: 'link',
                                             attrs: {
                                                 href: pullRequestLink,
-                                                title: "PR link"
-                                            }
-                                        }
-                                    ]
+                                                title: 'PR link',
+                                            },
+                                        },
+                                    ],
                                 },
-                                {
-                                    type: "hardBreak"
-                                }
-                            ]
-                        }
+                            ],
+                        },
                     ]
                     : []),
                 {
-                    type: "paragraph",
+                    type: 'paragraph',
                     content: [
                         {
-                            type: "text",
+                            type: 'text',
                             text: previewUrl,
                             marks: [
                                 {
-                                    type: "link",
+                                    type: 'link',
                                     attrs: {
                                         href: previewUrl,
-                                        title: "Deploy preview url"
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
+                                        title: 'Deploy preview url',
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
     }));
 };
 
@@ -9892,7 +9880,7 @@ const AsyncFunction = Object.getPrototypeOf(function () {
     return __awaiter(this, void 0, void 0, function* () { });
 }).constructor;
 const getOptions = (fn) => (args) => __awaiter(void 0, void 0, void 0, function* () {
-    let output = "";
+    let output = '';
     const options = {
         listeners: {
             stdout: (data) => {
@@ -9902,9 +9890,9 @@ const getOptions = (fn) => (args) => __awaiter(void 0, void 0, void 0, function*
     };
     const commentPayload = getCommentString({
         appName: args.appName,
-        commitLink: Object(core.getInput)("commit-link"),
+        commitLink: Object(core.getInput)('commit-link'),
         previewUrl: args.previewUrl,
-        pullRequestLink: Object(core.getInput)("pull-request-link"),
+        pullRequestLink: Object(core.getInput)('pull-request-link'),
     });
     yield fn(Object.assign(Object.assign({}, args), { commentPayload, options }));
     return JSON.parse(output);
@@ -9924,29 +9912,29 @@ const editComment = ({ jiraEndpoint, jiraIssueId, jiraAccount, jiraAuthToken, co
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const jiraEndpoint = Object(core.getInput)("jira-endpoint");
-            const jiraIssueIdRaw = Object(core.getInput)("jira-issue-id");
-            const jiraAccount = Object(core.getInput)("jira-account");
-            const jiraAuthToken = Object(core.getInput)("jira-auth-token");
-            const appName = Object(core.getInput)("app-name");
-            const previewUrl = Object(core.getInput)("deploy-preview-url");
-            const resolveTicketIdsScript = Object(core.getInput)("resolve-ticket-ids-script");
-            if ((!jiraIssueIdRaw || jiraIssueIdRaw === "") &&
-                resolveTicketIdsScript === "") {
-                Object(core.warning)("Jira issue id not found, exiting...");
+            const jiraEndpoint = Object(core.getInput)('jira-endpoint');
+            const jiraIssueIdRaw = Object(core.getInput)('jira-issue-id');
+            const jiraAccount = Object(core.getInput)('jira-account');
+            const jiraAuthToken = Object(core.getInput)('jira-auth-token');
+            const appName = Object(core.getInput)('app-name');
+            const previewUrl = Object(core.getInput)('deploy-preview-url');
+            const resolveTicketIdsScript = Object(core.getInput)('resolve-ticket-ids-script');
+            if ((!jiraIssueIdRaw || jiraIssueIdRaw === '') &&
+                resolveTicketIdsScript === '') {
+                Object(core.warning)('Jira issue id not found, exiting...');
             }
             else {
-                const script = resolveTicketIdsScript === ""
+                const script = resolveTicketIdsScript === ''
                     ? undefined
-                    : new AsyncFunction("branchName", resolveTicketIdsScript);
+                    : new AsyncFunction('branchName', resolveTicketIdsScript);
                 let jiraIssueId = [Number(jiraIssueIdRaw)];
                 if (script) {
                     const context = github.context;
                     const { eventName, payload } = context;
-                    if (eventName === "pull_request") {
+                    if (eventName === 'pull_request') {
                         const { pull_request: { head: { ref }, }, } = payload;
                         const result = yield script(ref);
-                        if (typeof result === "number") {
+                        if (typeof result === 'number') {
                             jiraIssueId = [result];
                         }
                         jiraIssueId = result;

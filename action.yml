@@ -1,5 +1,5 @@
-name: "Jira commenter"
-description: "This actions will post a comment on a Jira ticket"
+name: 'Jira commenter'
+description: 'This actions will post a comment on a Jira ticket'
 
 inputs:
   jira-endpoint:
@@ -20,5 +20,5 @@ inputs:
     required: true
 
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'

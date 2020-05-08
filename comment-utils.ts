@@ -5,30 +5,30 @@ const identifier = (appName: string) => {
 export const getCommentsOfAdmin = (
   comments: any[],
   jiraAccount: string,
-  appName: string
+  appName: string,
 ) => {
   const commentsOfAdmin = comments.filter(
-    c => c?.author?.emailAddress === jiraAccount
+    (c) => c?.author?.emailAddress === jiraAccount,
   );
 
   const firstLineOfEveryComments = commentsOfAdmin.reduce<
     Array<{ line: string; id: number }>
   >((lines, currentComment) => {
     const text = currentComment.body.content[0].content.reduce((acc, cur) => {
-      return (acc += cur?.text ?? "");
-    }, "");
+      return (acc += cur?.text ?? '');
+    }, '');
 
     return lines.concat({ line: text, id: currentComment.id });
   }, []);
 
-  return firstLineOfEveryComments.filter(l => l.line === identifier(appName));
+  return firstLineOfEveryComments.filter((l) => l.line === identifier(appName));
 };
 
 export const getCommentString: ({
   appName,
   commitLink,
   previewUrl,
-  pullRequestLink
+  pullRequestLink,
 }: {
   appName: string;
   commitLink: string;
@@ -38,111 +38,99 @@ export const getCommentString: ({
   return JSON.stringify(
     JSON.stringify({
       body: {
-        type: "doc",
+        type: 'doc',
         version: 1,
         content: [
           {
-            type: "paragraph",
+            type: 'paragraph',
             content: [
               {
-                type: "text",
-                text: "Preview Deploy for "
+                type: 'text',
+                text: 'Preview Deploy for ',
               },
               {
-                type: "text",
+                type: 'text',
                 text: appName,
                 marks: [
                   {
-                    type: "em"
-                  }
-                ]
+                    type: 'em',
+                  },
+                ],
               },
               {
-                type: "text",
-                text: " ready!"
+                type: 'text',
+                text: ' ready!',
               },
-              {
-                type: "hardBreak"
-              }
-            ]
+            ],
           },
           {
-            type: "paragraph",
+            type: 'paragraph',
             content: [
               {
-                type: "text",
-                text: "Built with commit "
+                type: 'text',
+                text: 'Built with commit ',
               },
               {
-                type: "text",
-                text: commitLink
-                  .split("/")
-                  .pop()
-                  .slice(0, 8),
+                type: 'text',
+                text: commitLink.split('/').pop().slice(0, 8),
                 marks: [
                   {
-                    type: "link",
+                    type: 'link',
                     attrs: {
                       href: commitLink,
-                      title: "Commit link"
-                    }
-                  }
-                ]
+                      title: 'Commit link',
+                    },
+                  },
+                ],
               },
-              {
-                type: "hardBreak"
-              }
-            ]
+            ],
           },
-          ...(pullRequestLink !== ""
+          ...(pullRequestLink !== ''
             ? [
                 {
-                  type: "paragraph",
+                  type: 'paragraph',
                   content: [
                     {
-                      type: "text",
-                      text: "Pull Request link "
+                      type: 'text',
+                      text: 'Pull Request link ',
                     },
                     {
-                      type: "text",
+                      type: 'text',
                       text: pullRequestLink,
                       marks: [
                         {
-                          type: "link",
+                          type: 'link',
                           attrs: {
                             href: pullRequestLink,
-                            title: "PR link"
-                          }
-                        }
-                      ]
+                            title: 'PR link',
+                          },
+                        },
+                      ],
                     },
-                    {
-                      type: "hardBreak"
-                    }
-                  ]
-                }
+                  ],
+                },
               ]
             : []),
           {
-            type: "paragraph",
+            type: 'paragraph',
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: previewUrl,
                 marks: [
                   {
-                    type: "link",
+                    type: 'link',
                     attrs: {
                       href: previewUrl,
-                      title: "Deploy preview url"
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    })
+                      title: 'Deploy preview url',
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    }),
   );
 };
